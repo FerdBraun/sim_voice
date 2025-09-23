@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const helper = () => {
-    const API_ROUTE = '172.28.4.10:8000'
+    const API_ROUTE = '172.29.4.10:8000'
     const post = async (url, data) => {
         const res = await axios.post(API_ROUTE + url, data)
         return res.data
