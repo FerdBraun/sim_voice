@@ -1,30 +1,22 @@
-# Dockerfile
+# Dockerfile.dev
 
-# Шаг 1: Сборка приложения
-FROM node:18-alpine AS builder
+FROM node:18-alpine
 
-# Устанавливаем рабочую директорию внутри контейнера
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
+# Копируем зависимости
 COPY package*.json ./
 
-# Устанавливаем зависимости
+# Устанавливаем зависимости (чистая установка)
 RUN npm ci
 
-# Копируем весь проект
+# Копируем всё остальное (кроме node_modules — он будет в volume)
 COPY . .
 
-# Собираем приложение
-RUN npm run dev
+# Открываем порт Vite (по умолчанию 5173)
+EXPOSE 5173
 
-
-
-# Копируем конфиг nginx (если нужен кастомный)
-
-# Копируем собранную папку dist из builder-стадии
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Открываем порт 80
-EXPOSE 80
-
+# Запускаем dev-сервер
+# --host 0.0.0.0 — чтобы был доступ извне контейнера
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
