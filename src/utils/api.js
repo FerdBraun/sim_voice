@@ -1,20 +1,20 @@
 import axios from "axios";
 
 const helper = () => {
-    const API_ROUTE = '172.29.4.10:8000'
-    const post = async (url, data) => {
-        const res = await axios.post(API_ROUTE + url, data)
+    const myROUTE = 'http://172.29.4.10:8000/'
+    const post = async (addr, data) => {
+        const res = await axios.post(myROUTE + addr, data)
         return res.data
     }
-    const remove = async (url, id) => {
-        await axios.delete(API_ROUTE + url + '/' + id)
+    const remove = async (addr, id) => {
+        await axios.delete(myROUTE + addr + '/' + id)
     }
-    const get = async (url) => {
-        const res = await axios.get(API_ROUTE + url)
+    const get = async (addr) => {
+        const res = await axios.get(myROUTE + addr)
         return res.data
     }
-    const fetchAudio = async (url) => {
-        const res = await axios.get(API_ROUTE + url, {
+    const fetchAudio = async (addr) => {
+        const res = await axios.get(myROUTE + addr, {
             responseType: 'blob' // Expecting a binary image file
         })
         return res.data
