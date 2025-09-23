@@ -1,0 +1,11 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  vue-app:
+    build: .
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    container_name: vue-app
