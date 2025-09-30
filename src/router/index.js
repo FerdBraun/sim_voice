@@ -6,6 +6,7 @@ import OuterAudioControls from "@/components/feature/OuterAudioControls.vue";
 import TimerPage from "@/components/feature/TimerPage.vue";
 
 
+
 const routes = [
 
 
@@ -45,13 +46,21 @@ const routes = [
         ]
     },
     {
-                path: '/timer',
-                name: 'timer',
-                component: TimerPage,
-                meta: {
-                    title: 'Таймер'
-                },
-            }
+        path: '/timer',
+        name: 'timer',
+        component: TimerPage,
+        meta: {
+            title: 'Таймер'
+        },
+    },
+    {
+        path: '/room/:id',
+        name: 'room',
+        component: () => import('@/views/RoomPageView.vue'),
+        meta: {
+            title: 'Комната'
+        },
+    }
 
 
 ]

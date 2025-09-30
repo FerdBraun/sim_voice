@@ -67,14 +67,17 @@ const setCurrent = (id) => {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
+  font-size: 1.6rem !important;
 
+}
+p{
+
+}
 body {
   font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
   background-color: #f9f9f9;
   color: #1a1a1a;
 }
-
 .admin-layout {
   display: flex;
   min-height: 100vh;
@@ -83,7 +86,7 @@ body {
 
 /* Боковая панель */
 .sidebar {
-  width: 24rem;
+  width: 32rem;
   background: #ffffff;
   padding: 24px 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);

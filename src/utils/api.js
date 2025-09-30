@@ -1,20 +1,20 @@
 import axios from "axios";
 
 const helper = () => {
-    const myROUTE = 'http://172.29.4.10:8000/'
+    const MainROUTE = 'https://enjoyably-opulent-basset.cloudpub.ru/'
     const post = async (addr, data) => {
-        const res = await axios.post(myROUTE + addr, data)
+        const res = await axios.post(MainROUTE + addr, data)
         return res.data
     }
     const remove = async (addr, id) => {
-        await axios.delete(myROUTE + addr + '/' + id)
+        await axios.delete(MainROUTE + addr + '/' + id)
     }
     const get = async (addr) => {
-        const res = await axios.get(myROUTE + addr)
+        const res = await axios.get(MainROUTE + addr)
         return res.data
     }
     const fetchAudio = async (addr) => {
-        const res = await axios.get(myROUTE + addr, {
+        const res = await axios.get(MainROUTE + addr, {
             responseType: 'blob' // Expecting a binary image file
         })
         return res.data
@@ -23,7 +23,8 @@ const helper = () => {
         post,
         get,
         remove,
-        fetchAudio
+        fetchAudio,
+        MainROUTE
     };
 }
 
