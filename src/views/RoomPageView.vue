@@ -84,10 +84,10 @@ function connect() {
 const gatherData = async () => {
   let res = await ApiHelper.get('rooms/' + roomId.value)
   roomName.value = res.name
-  res = await ApiHelper.get('current-students')
+  res = await ApiHelper.get('current-students/'+roomId.value)
 
-  curStudent.value = res[roomId.value]?.current ?? "-"
-  nextStudent.value = res[roomId.value]?.next ?? "-"
+  curStudent.value = res?.current ?? "-"
+  nextStudent.value = res?.next ?? "-"
 
 
 }
@@ -96,10 +96,10 @@ onMounted(async () => {
   await connect();
   await gatherData()
   intervalId.value = setInterval(async () => {
-    const res = await ApiHelper.get('current-students')
+    const res = await ApiHelper.get('current-students/'+roomId.value)
 
-    curStudent.value = res[roomId.value]?.current ?? "-"
-    nextStudent.value = res[roomId.value]?.next ?? "-"
+    curStudent.value = res?.current ?? "-"
+    nextStudent.value = res?.next ?? "-"
   }, 5000)
 
 });
