@@ -210,7 +210,7 @@ function connect() {
   if (cur_room_number.value !== undefined) {
     const host = 'http://172.29.4.10:8101'
 
-    const wsUrl = host + '/ws/' + cur_room_number.value
+    const wsUrl = host + '/ws/room/' + cur_room_number.value
 
 
     let ws;
