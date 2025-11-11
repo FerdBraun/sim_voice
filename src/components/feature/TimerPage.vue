@@ -95,6 +95,7 @@ const loadFromStorage = () => {
       id.value = state.id
       timeLeft.value = state.timeLeft || ExamDuration.value
       cur_room_number.value = state.room_number
+      connect()
       if (state.isRunning) {
 
         startTimer() // возобновляем таймер
@@ -103,7 +104,9 @@ const loadFromStorage = () => {
       console.error('Ошибка при восстановлении состояния:', e)
       resetTimer() // сброс при ошибке
     }
+
   }
+
 }
 
 // Запуск таймера
