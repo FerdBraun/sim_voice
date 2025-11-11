@@ -3,7 +3,7 @@
     <!-- ID -->
     <div class="id-row">
       <p>ID (уникальный идентификатор)</p>
-      <input v-model="id" type="text" placeholder="Введите ID" :disabled="isRunning" @input="saveToStorage"/>
+      <input v-model="id" type="text" placeholder="ID появится здесь" disabled @change="saveToStorage"/>
       <p style="width: fit-content">Комната</p>
       <select v-model="cur_room_number" @change="saveToStorage" :disabled="isRunning" class="input-field">
         <option v-for="room in availableRooms" :key="room.id" :value="room.number">{{ room.number }}</option>
@@ -23,17 +23,17 @@
         Запустить таймер ▶
       </button>
       <button @click="stopTimer" :disabled="!isRunning" class="stop-button">
-        Остановить таймер ⏸
+        Пауза ⏸
       </button>
       <button @click="resetTimerHandler" class="reset-button">
-        Сбросить таймер 🔄
+        Закончить экзамен 🔄
       </button>
     </div>
   </div>
   <div class="confirmation_window" id="confirmation">
     <p>Вы уверены что хотите завершить экзамен?</p>
 
-    <button  class="start-button" @click="resetTimer">Да</button>
+    <button class="start-button" @click="resetTimer">Да</button>
     <button class="reset-button" @click="hideConfirmation">Нет</button>
   </div>
 </template>
@@ -54,6 +54,7 @@ const cur_room_number = ref(undefined)
 
 const audioSettings = ref([])
 import helper from "@/utils/api.js";
+import {useRoute} from "vue-router";
 
 const ApiHelper = helper()
 
@@ -69,12 +70,13 @@ const formattedTime = computed(() => {
   const seconds = timeLeft.value % 60
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 })
-const cur_room_id = computed(()=>{
+const cur_room_id = computed(() => {
   const room_object = rooms.value.find(room => room.number === cur_room_number.value)
   return room_object.id
 })
 // Сохранение состояния в localStorage
 const saveToStorage = () => {
+  connect()
   localStorage.setItem(STORAGE_KEY, JSON.stringify({
     id: id.value,
     room_number: cur_room_number.value,
@@ -107,13 +109,13 @@ const loadFromStorage = () => {
 // Запуск таймера
 const startTimer = () => {
   if (!isRunning.value) {
-    ApiHelper.post("exam/start",{student_id:id.value,room_id:cur_room_id.value})
+    ApiHelper.post("exam/start", {student_id: id.value, room_id: cur_room_id.value})
     isRunning.value = true
     saveToStorage()
     intervalId.value = setInterval(() => {
       audioSettings.value.forEach(audio => {
-        if ( parseInt( ExamDuration.value) - parseInt( timeLeft.value) === secondefier(audio.minutes, audio.seconds)) {
-          ApiHelper.post('notify/'+ cur_room_number.value + '?file_id='+audio.file_id)
+        if (parseInt(ExamDuration.value) - parseInt(timeLeft.value) === secondefier(audio.minutes, audio.seconds)) {
+          ApiHelper.post('notify/' + cur_room_number.value + '?file_id=' + audio.file_id)
 
         }
 
@@ -145,12 +147,12 @@ const stopTimer = () => {
 
 // Сброс таймера
 
-const resetTimerHandler= () =>{
+const resetTimerHandler = () => {
   const notifier = document.getElementById('confirmation')
-  notifier.style.display="flex"
+  notifier.style.display = "flex"
 }
-const hideConfirmation = () =>{
-  document.getElementById('confirmation').style.display='none'
+const hideConfirmation = () => {
+  document.getElementById('confirmation').style.display = 'none'
 }
 
 const resetTimer = () => {
@@ -159,7 +161,7 @@ const resetTimer = () => {
     intervalId.value = null
   }
   isRunning.value = false
-  document.getElementById('confirmation').style.display='none'
+  document.getElementById('confirmation').style.display = 'none'
   timeLeft.value = ExamDuration.value
   id.value = ''
   ApiHelper.post('exam/reset/' + cur_room_id.value)
@@ -202,19 +204,70 @@ const gatherData = async () => {
         };
       }
   );
-
-
-
 }
+
+function connect() {
+  if (cur_room_number.value !== undefined) {
+    const host = 'http://172.29.4.10:8101'
+
+    const wsUrl = host + '/ws/' + cur_room_number.value
+
+
+    let ws;
+    {
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        {
+
+          console.log('WS open');
+        }
+      };
+
+      ws.onmessage = async (event) => {
+        {
+          try {
+            {
+              const data = JSON.parse(event.data);
+              console.log('WS message', data);
+              id.value = data.user
+
+            }
+          } catch (e) {
+            {
+              console.warn('Invalid WS message', e);
+            }
+          }
+        }
+      };
+
+      ws.onclose = (ev) => {
+        {
+
+          console.log('WS closed', ev);
+          setTimeout(connect, 3000);
+        }
+      };
+
+      ws.onerror = (err) => {
+        {
+          console.error('WS error', err);
+          ws.close();
+        }
+      };
+    }
+  }
+}
+
 
 </script>
 
 <style scoped>
 
-.confirmation_window{
+.confirmation_window {
   width: 20rem;
   height: 20rem;
-  background: #aaa ;
+  background: #aaa;
   border: 1px solid #ccc;
   border-radius: 1rem;
 
@@ -230,6 +283,7 @@ const gatherData = async () => {
 
   display: none;
 }
+
 .timer-container {
   padding: 20px;
   border: 1px solid #ccc;

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const helper = () => {
-    const MainROUTE = 'https://enjoyably-opulent-basset.cloudpub.ru/'
+    const MainROUTE = 'http://172.29.4.10:8000/'
     const post = async (addr, data) => {
         const res = await axios.post(MainROUTE + addr, data)
         return res.data
