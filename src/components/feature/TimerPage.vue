@@ -57,7 +57,11 @@ import helper from "@/utils/api.js";
 import {useRoute} from "vue-router";
 
 const ApiHelper = helper()
-
+watchEffect(()=>{
+  console.log('new room detected. reconecting to ')
+  console.log(cur_room_number.value)
+  connect()
+})
 
 // Ключ для localStorage
 const STORAGE_KEY = 'vue-timer-state'
@@ -76,7 +80,7 @@ const cur_room_id = computed(() => {
 })
 // Сохранение состояния в localStorage
 const saveToStorage = () => {
-  connect()
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify({
     id: id.value,
     room_number: cur_room_number.value,
