@@ -3,7 +3,7 @@
     <!-- ID -->
     <div class="id-row">
       <p>ID (уникальный идентификатор)</p>
-      <input v-model="id" type="text" placeholder="ID появится здесь" disabled @change="saveToStorage"/>
+      <input v-model="id" type="text" placeholder="ID появится здесь" @change="saveToStorage"/>
       <p style="width: fit-content">Комната</p>
       <select v-model="cur_room_number" @change="saveToStorage" :disabled="isRunning" class="input-field">
         <option v-for="room in availableRooms" :key="room.id" :value="room.number">{{ room.number }}</option>
